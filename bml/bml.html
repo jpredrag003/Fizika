@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bojl-Mariotov zakon - Interaktivna simulacija</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Bojl-Mariotov zakon</h1>
+            <p>Izotermski proces: Proizvod pritiska i zapremine gasa na stalnoj temperaturi ostaje konstantan (pV = const).</p>
+        </header>
+
+        <div class="grid">
+            <!-- Leva strana: Cilindar -->
+            <div class="card">
+                <h2>Model cilindra sa česticama</h2>
+                
+                <div class="canvas-container">
+                    <canvas id="cylinderCanvas" width="220" height="300"></canvas>
+                </div>
+
+                <div class="manometer">
+                    <span class="label">Pritisak (p)</span>
+                    <div><span id="pressureDisplay">1.00</span> bar</div>
+                </div>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span>Zapremina (V):</span>
+                            <span id="volumeVal" style="color: #2563eb;">5.0 L</span>
+                        </div>
+                        <input id="volumeRange" type="range" min="2" max="10" step="0.1" value="5">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span>Temperatura (T):</span>
+                            <span id="tempVal" style="color: #ef4444;">300 K</span>
+                        </div>
+                        <input id="tempRange" type="range" min="200" max="450" step="5" value="300">
+                    </div>
+                </div>
+
+                <div class="button-row">
+                    <button id="autoVolBtn" class="btn-action">▶ Animiraj Zapreminu</button>
+                    <button id="autoTempBtn" class="btn-action" style="background: #0284c7;">▶ Animiraj Temperaturu</button>
+                </div>
+
+                <div class="info-box">
+                    Konstanta (p × V): <strong id="pvConstDisplay">50.0</strong>
+                </div>
+            </div>
+
+            <!-- Desna strana: Grafik i objašnjenje -->
+            <div class="card">
+                <h2>P-V Grafik (Izotermski proces)</h2>
+                <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 12px;">X-osa: Zapremina (V) | Y-osa: Pritisak (p)</p>
+                
+                <div class="canvas-container" style="background: #ffffff;">
+                    <canvas id="graphCanvas" width="400" height="240"></canvas>
+                </div>
+
+                <div class="explanation" id="dynamicExplanation">
+                    Pri stalnoj temperaturi od 300 K, smanjenjem zapremine proporcionalno se povećava pritisak gasa.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
