@@ -50,7 +50,3 @@ Pošto je projekat izrađen u čistim web tehnologijama (bez potrebe za instalac
    * Otvorite projekat u VS Code-u.
    * Instalirajte ekstenziju **Live Server**.
    * Kliknite desnim tasterom miša na `bernoulli.html` i izaberite opciju **Open with Live Server**.
-
-## 📄 Licenca
-
-Ovaj projekat je otvorenog koda i dostupan je pod [MIT licencom](LICENSE).
