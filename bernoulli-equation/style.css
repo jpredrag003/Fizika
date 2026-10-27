@@ -1,0 +1,7 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+input[type=range] {
+    accent-color: #3b82f6;
+}

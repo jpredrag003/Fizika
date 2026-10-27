@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="sr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bernulijeva Jednačina</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<!-- KaTeX CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+	<!-- KaTeX JS -->
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			renderMathInElement(document.body, {
+				delimiters: [
+					{left: '$$', right: '$$', display: true},
+					{left: '$', right: '$', display: false}
+				],
+				throwOnError : false
+			});
+		});
+	</script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-full flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 py-4 px-6 shadow-md">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 p-2.5 rounded-xl text-white shadow-lg shadow-blue-500/30">
+                    <i class="fa-solid fa-water text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Bernulijeva Jednačina</h1>
+                    <p class="text-xs sm:text-sm text-slate-400">Zakon održanja energije za idealne fluide</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button id="infoBtn" onclick="toggleModal(true)" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-medium px-4 py-2 rounded-lg transition flex items-center gap-2 border border-slate-600">
+                    <i class="fa-solid fa-circle-info text-blue-400"></i> Teorija & Uputstvo
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Left 2 Cols: Canvas Simulation & Live Values -->
+        <div class="lg:col-span-2 flex flex-col gap-6">
+
+            <!-- Canvas Container card -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-xl flex flex-col relative overflow-hidden">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 z-10">
+                    <div>
+                        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-blue-400"></i> Vizuelni Prikaz Kretanja Fluida kroz Cev
+                        </h2>
+                        <p class="text-xs text-slate-400">Prikaz manometara sa nivoom tečnosti, vektora brzina i pritiska u realnom vremenu.</p>
+                    </div>
+                    <!-- Mode Toggle -->
+                    <div class="bg-slate-900 p-1 rounded-xl flex border border-slate-700 self-start sm:self-auto">
+                        <button id="modeHorizontal" onclick="setMode('horizontal')" class="px-3 py-1.5 text-xs font-medium rounded-lg transition bg-blue-600 text-white shadow">
+                            Horizontalna Cev
+                        </button>
+                        <button id="modeIncline" onclick="setMode('incline')" class="px-3 py-1.5 text-xs font-medium rounded-lg transition text-slate-400 hover:text-white">
+                            Promenljiva Visina
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Canvas Wrapper -->
+                <div class="relative w-full rounded-xl overflow-hidden bg-slate-950 border border-slate-800 shadow-inner flex items-center justify-center" style="height: 350px;">
+                    <canvas id="simCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+
+                    <!-- Cavitation Warning Banner (Hidden by default) -->
+                    <div id="cavitationAlert" class="absolute top-3 right-3 bg-rose-500/90 text-white px-3 py-1.5 rounded-lg text-xs font-bold hidden flex items-center gap-2 shadow-lg animate-pulse">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Upozorenje: Kavitacija!
+                    </div>
+
+                    <!-- Overlay Legend -->
+                    <div class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-md px-3 py-2 rounded-lg border border-slate-700 text-xs flex items-center gap-4 text-slate-300">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> Visok Pritisak ($p_1$)
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> Nizak Pritisak ($p_2$)
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-1 bg-amber-400 inline-block"></span> Vektori brzine ($\vec{v}$)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Legend / Stats bar below canvas -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+                    <div class="bg-slate-900/60 border border-slate-700/60 p-3 rounded-xl text-center">
+                        <span class="text-xs text-slate-400 block">Konstanta ($E_{tot}$)</span>
+                        <span id="statConst" class="text-base font-bold text-emerald-400">0.00 kPa</span>
+                    </div>
+                    <div class="bg-slate-900/60 border border-slate-700/60 p-3 rounded-xl text-center">
+                        <span class="text-xs text-slate-400 block">Protok ($Q$)</span>
+                        <span id="statFlow" class="text-base font-bold text-blue-400">0.00 L/s</span>
+                    </div>
+                    <div class="bg-slate-900/60 border border-slate-700/60 p-3 rounded-xl text-center">
+                        <span class="text-xs text-slate-400 block">Odnos brzina ($v_2 / v_1$)</span>
+                        <span id="statSpeedRatio" class="text-base font-bold text-indigo-400">1.0 : 1.0</span>
+                    </div>
+                    <div class="bg-slate-900/60 border border-slate-700/60 p-3 rounded-xl text-center">
+                        <span class="text-xs text-slate-400 block">Efekat</span>
+                        <span id="statEffect" class="text-xs font-semibold text-amber-400 leading-tight flex items-center justify-center h-full">Venturijev efekt</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Point Comparison Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Point 1 -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-lg border-l-4 border-l-blue-500">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-white flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Tačka 1 (Ulaz)
+                        </h3>
+                        <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded font-mono">Presek $A_1$</span>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between"><span class="text-slate-400">Prečnik ($D_1$):</span> <span id="valD1" class="font-mono font-medium text-white">0.20 m</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Brzina ($v_1$):</span> <span id="valV1" class="font-mono font-medium text-blue-300">2.0 m/s</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Statički Pritisak ($p_1$):</span> <span id="valP1" class="font-mono font-medium text-emerald-300">105.0 kPa</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Dinamički Pritisak:</span> <span id="valDyn1" class="font-mono font-medium text-slate-300">2.0 kPa</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Visina ($h_1$):</span> <span id="valH1" class="font-mono font-medium text-slate-300">0.0 m</span></div>
+                    </div>
+                </div>
+
+                <!-- Point 2 -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-lg border-l-4 border-l-rose-500">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-white flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Tačka 2 (Suženje / Izlaz)
+                        </h3>
+                        <span class="text-xs bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded font-mono">Presek $A_2$</span>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between"><span class="text-slate-400">Prečnik ($D_2$):</span> <span id="valD2" class="font-mono font-medium text-white">0.10 m</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Brzina ($v_2$):</span> <span id="valV2" class="font-mono font-medium text-rose-300">8.0 m/s</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Statički Pritisak ($p_2$):</span> <span id="valP2" class="font-mono font-medium text-emerald-300">73.0 kPa</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Dinamički Pritisak:</span> <span id="valDyn2" class="font-mono font-medium text-slate-300">32.0 kPa</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Visina ($h_2$):</span> <span id="valH2" class="font-mono font-medium text-slate-300">0.0 m</span></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Col: Interactive Controls Panel -->
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-xl flex flex-col gap-5 justify-between">
+            <div class="space-y-5">
+                <div class="border-b border-slate-700 pb-3">
+                    <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-blue-400"></i> Kontrole Simulacije
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Prilagodite parametre fluida i cevi u realnom vremenu.</p>
+                </div>
+
+                <!-- Fluid Type Preset -->
+                <div class="space-y-2">
+                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center justify-between">
+                        <span>Vrsta Fluida</span>
+                        <span id="rhoLabel" class="text-blue-400 font-mono">1000 kg/m³</span>
+                    </label>
+                    <select id="fluidPreset" onchange="changeFluidPreset()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500">
+                        <option value="1000">Voda</option>
+                        <option value="920">Ulje</option>
+                        <option value="13600">Živa</option>
+                        <option value="1.2">Vazduh</option>
+                        <option value="custom">Proizvoljna gustina...</option>
+                    </select>
+                </div>
+
+                <!-- Custom Density Slider -->
+                <div id="customDensityContainer" class="space-y-2 hidden">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-300">Gustina ($\rho$)</span>
+                        <span id="rhoVal" class="font-mono text-blue-400">1000 kg/m³</span>
+                    </div>
+                    <input type="range" id="sliderRho" min="1" max="15000" step="10" value="1000" oninput="updateSimulation()" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
+                </div>
+
+                <hr class="border-slate-700/60">
+
+                <!-- Inlet Speed v1 -->
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-300 font-medium">Ulazna brzina ($v_1$)</span>
+                        <span id="v1Val" class="font-mono text-blue-400 font-bold">2.0 m/s</span>
+                    </div>
+                    <input type="range" id="sliderV1" min="0.5" max="10" step="0.1" value="2.0" oninput="updateSimulation()" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
+                </div>
+
+                <!-- Inlet Diameter D1 -->
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-300 font-medium">Prečnik ulaza ($D_1$)</span>
+                        <span id="d1Val" class="font-mono text-blue-400 font-bold">0.20 m</span>
+                    </div>
+                    <input type="range" id="sliderD1" min="0.1" max="0.4" step="0.01" value="0.20" oninput="updateSimulation()" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
+                </div>
+
+                <!-- Throat Diameter D2 -->
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-300 font-medium">Prečnik suženja ($D_2$)</span>
+                        <span id="d2Val" class="font-mono text-blue-400 font-bold">0.10 m</span>
+                    </div>
+                    <input type="range" id="sliderD2" min="0.05" max="0.35" step="0.01" value="0.10" oninput="updateSimulation()" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
+                </div>
+
+                <!-- Inlet Pressure p1 -->
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-300 font-medium">Ulazni pritisak ($p_1$)</span>
+                        <span id="p1InputVal" class="font-mono text-emerald-400 font-bold">105 kPa</span>
+                    </div>
+                    <input type="range" id="sliderP1" min="50" max="300" step="1" value="105" oninput="updateSimulation()" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
+                </div>
+
+                <!-- Height h2 -->
+                <div id="heightControlGroup" class="space-y-2 transition-opacity duration-300 opacity-30 pointer-events-none">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-300 font-medium">Visina izlaza ($h_2$)</span>
+                        <span id="h2Val" class="font-mono text-indigo-400 font-bold">0.0 m</span>
+                    </div>
+                    <input type="range" id="sliderH2" min="-2.0" max="2.0" step="0.1" value="0.0" oninput="updateSimulation()" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
+                </div>
+            </div>
+
+            <!-- Reset Button -->
+            <button onclick="resetDefaults()" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-medium py-2.5 rounded-xl transition border border-slate-600 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-rotate-right"></i> Vrati na početne vrednosti
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 py-4 px-6 text-center text-xs text-slate-400 mt-auto">
+        <p>Bernulijeva jednačina: <span>$p + \frac{1}{2}\rho v^2 + \rho gh$ = const.</span> | Jednačina kontinuiteta: <span>$A_1 v_1 = A_2 v_2$</span></p>
+    </footer>
+
+    <!-- Theory Modal -->
+    <div id="theoryModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-blue-400"></i> O Bernulijevoj jednačini
+                </h3>
+                <button onclick="toggleModal(false)" class="text-slate-400 hover:text-white p-1.5 rounded-lg bg-slate-800">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3 text-sm text-slate-300 leading-relaxed">
+                <p>
+                    <strong>Bernulijeva jednačina</strong> povezuje pritisak, brzinu i visinu fluida u strujnoj cevi. Predstavlja zakon održanja energije za idealne fluide.
+                </p>
+				<div class="bg-slate-800/80 border border-slate-700 p-3 rounded-xl text-center text-blue-300 text-sm">
+					$$p + \frac{1}{2}\rho v^2 + \rho gh = \text{const.}$$
+				</div>
+                <ul class="list-disc pl-5 space-y-1.5">
+                    <li><strong class="text-white">$p$:</strong> Statički pritisak fluida na zidove cevi.</li>
+                    <li><strong class="text-white">$\frac{1}{2}\rho v^2$:</strong> Dinamički pritisak (kinetička energija).</li>
+                    <li><strong class="text-white">$\rho gh$:</strong> Potencijalna energija u gravitacionom polju.</li>
+                </ul>
+                <h4 class="font-bold text-white pt-2">Venturijev efekat</h4>
+                <p>
+                    U suženju cevi površina $A_2 < A_1$ uslovljava veću brzinu $v_2 > v_1$, što dovodi do pada statičkog pritiska ($p_2 < p_1$). Ukoliko pritisak padne prenisko, dolazi do pojave <strong>kavitacije</strong>.
+                </p>
+            </div>
+
+            <div class="pt-2 flex justify-end border-t border-slate-800">
+                <button onclick="toggleModal(false)" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-5 py-2 rounded-xl transition text-sm">
+                    Razumem, zatvori
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Simulation Script Link -->
+    <script src="script.js"></script>
+</body>
+</html>
