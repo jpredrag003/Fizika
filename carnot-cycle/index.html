@@ -1,0 +1,204 @@
+<!doctype html>
+<html class="h-full" lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta content="width=device-width,initial-scale=1" name="viewport">
+<title>Karnov Ciklus</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" defer onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:!0},{left:'$',right:'$',display:!1},{left:'\\(',right:'\\)',display:!1},{left:'\\[',right:'\\]',display:!0}]})"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+</head>
+<body class="flex min-h-full flex-col">
+<header class="flex items-center border-[var(--border-color)] border-b glass-panel justify-between px-6 py-4 sticky top-0 z-50">
+  <div class="flex items-center space-x-3.5">
+    <div class="border p-2.5 bg-gradient-to-br border-blue-400/40 from-blue-600 rounded-2xl shadow-lg to-indigo-900"><i class="h-5 w-5 animate-pulse text-cyan-300" data-lucide="cpu"></i></div>
+    <div>
+      <h1 class="mono-font font-bold tracking-wider uppercase text-base text-white">Karnov Ciklus</h1>
+      <p class="mono-font text-slate-400 text-[11px]">Idealno radno telo: $\gamma = 1.4$</p>
+    </div>
+  </div>
+  <button class="mono-font flex text-xs items-center rounded-xl border font-medium px-4 transition bg-blue-950/40 border-blue-500/30 hover:bg-blue-900/50 hover:text-white py-2 shadow space-x-2 text-cyan-300" onclick="openInfoModal()">
+    <i class="h-3.5 w-3.5 text-orange-400" data-lucide="book-open"></i> <span>Teorija</span>
+  </button>
+</header>
+
+<main class="w-full flex-1 gap-6 grid grid-cols-1 items-start lg:grid-cols-12 max-w-7xl md:p-6 mx-auto p-4">
+  <div class="space-y-6 lg:col-span-4">
+    <div class="glass-panel relative rounded-2xl overflow-hidden p-5">
+      <div class="mono-font text-[10px] absolute border-b border-l font-semibold px-3 py-1 right-0 rounded-bl-xl top-0 bg-blue-600/20 border-blue-500/30 text-blue-300">KONTROLNA TABLA</div>
+      <h2 class="mono-font flex text-xs items-center gap-2 font-bold text-cyan-400 tracking-wider uppercase mb-5">
+        <i class="h-4 w-4 text-orange-400" data-lucide="sliders"></i> Ulazni Parametri
+      </h2>
+      <div class="space-y-4">
+        <div>
+          <div class="mono-font flex text-xs justify-between mb-1.5">
+            <span class="flex items-center gap-1.5 text-slate-300"><span class="rounded-full h-2 w-2 bg-[var(--color-heater)] shadow-[0_0_8px_var(--color-heater)]"></span> Temp. Grejača ($T_1$)</span>
+            <span class="font-bold text-orange-400"><span id="valT1">500</span> K</span>
+          </div>
+          <input class="w-full cursor-pointer" id="rangeT1" max="800" min="350" step="10" type="range" value="500">
+        </div>
+        <div>
+          <div class="mono-font flex text-xs justify-between mb-1.5">
+            <span class="flex items-center gap-1.5 text-slate-300"><span class="rounded-full h-2 w-2 bg-[var(--color-cooler)] shadow-[0_0_8px_var(--color-cooler)]"></span> Temp. Hladnjaka ($T_2$)</span>
+            <span class="font-bold text-cyan-400"><span id="valT2">300</span> K</span>
+          </div>
+          <input class="w-full cursor-pointer" id="rangeT2" max="340" min="200" step="5" type="range" value="300">
+        </div>
+        <div>
+          <div class="mono-font flex text-xs justify-between mb-1.5">
+            <span class="text-slate-300">Poč. Zapremina ($V_A$)</span>
+            <span class="font-bold text-cyan-300"><span id="valVA">1.0</span> L</span>
+          </div>
+          <input class="w-full cursor-pointer" id="rangeVA" max="1.5" min="0.8" step="0.05" type="range" value="1.0">
+        </div>
+        <div>
+          <div class="mono-font flex text-xs justify-between mb-1.5">
+            <span class="text-slate-300">Maksim. Zapremina ($V_B$)</span>
+            <span class="font-bold text-cyan-300"><span id="valVB">2.5</span> L</span>
+          </div>
+          <input class="w-full cursor-pointer" id="rangeVB" max="4.0" min="2.0" step="0.1" type="range" value="2.5">
+        </div>
+        <div>
+          <div class="mono-font flex text-xs justify-between mb-1.5">
+            <span class="text-slate-300">Brzina simulacije</span>
+            <span class="font-bold text-slate-400" id="valSpeedLabel">1.0x</span>
+          </div>
+          <input class="w-full cursor-pointer" id="rangeSpeed" max="3" min="0.5" step="0.5" type="range" value="1">
+        </div>
+      </div>
+      <div class="flex items-center gap-2 border-[var(--border-color)] border-t mt-6 pt-4">
+        <button class="mono-font flex text-xs items-center gap-2 active:scale-95 bg-gradient-to-r border border-blue-400/30 flex-1 font-medium from-blue-600 hover:from-blue-500 hover:to-indigo-500 justify-center px-4 py-2.5 rounded-xl shadow-lg text-white to-indigo-600 transition" onclick="togglePlay()" id="btnPlay">
+          <i class="h-3.5 w-3.5" data-lucide="play" id="playIcon"></i> <span id="playText">Pokreni Ciklus</span>
+        </button>
+        <button class="border rounded-xl transition active:scale-95 bg-slate-900/60 border-[var(--border-color)] hover:bg-blue-900/30 p-2.5 shadow text-slate-300" onclick="resetSimulation()" title="Resetuj">
+          <i class="h-4 w-4" data-lucide="rotate-ccw"></i>
+        </button>
+        <button class="border rounded-xl transition active:scale-95 bg-slate-900/60 border-[var(--border-color)] hover:bg-blue-900/30 p-2.5 shadow text-slate-300" onclick="stepSimulation()" title="Korak">
+          <i class="h-4 w-4" data-lucide="skip-forward"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="glass-panel relative rounded-2xl overflow-hidden p-5">
+      <div class="mono-font text-[10px] absolute border-b border-l font-semibold px-3 py-1 right-0 rounded-bl-xl top-0 bg-indigo-600/20 border-indigo-500/30 text-indigo-300">BILANS</div>
+      <h2 class="mono-font flex text-xs items-center gap-2 font-bold text-cyan-400 tracking-wider uppercase mb-4">
+        <i class="h-4 w-4 text-cyan-300" data-lucide="activity"></i> Termodinamički Izveštaj
+      </h2>
+      <div class="grid gap-3 grid-cols-2">
+        <div class="border rounded-xl border-blue-500/20 shadow-inner bg-slate-950/60 p-3">
+          <span class="mono-font text-[10px] block mb-1 text-slate-400">Toplota $Q_1$</span>
+          <span class="mono-font font-bold text-sm text-orange-400" id="statQ1">0.00 J</span>
+        </div>
+        <div class="border rounded-xl border-blue-500/20 shadow-inner bg-slate-950/60 p-3">
+          <span class="mono-font text-[10px] block mb-1 text-slate-400">Toplota $Q_2$</span>
+          <span class="mono-font font-bold text-cyan-400 text-sm" id="statQ2">0.00 J</span>
+        </div>
+        <div class="border rounded-xl border-blue-500/20 shadow-inner bg-slate-950/60 p-3">
+          <span class="mono-font text-[10px] block mb-1 text-slate-400">Ukupan Rad ($W$)</span>
+          <span class="mono-font font-bold text-sm text-purple-400" id="statWork">0.00 J</span>
+        </div>
+        <div class="border rounded-xl border-blue-500/20 shadow-inner bg-slate-950/60 p-3">
+          <span class="mono-font text-[10px] block mb-1 text-slate-400">Iskorišćenje ($\eta$)</span>
+          <span class="mono-font font-bold text-sm text-emerald-400" id="statEff">0.0%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="space-y-6 lg:col-span-8">
+    <div class="grid gap-6 grid-cols-1 md:grid-cols-2">
+      <div class="glass-panel relative rounded-2xl overflow-hidden p-5">
+        <div class="mono-font text-[10px] absolute border-b border-l font-semibold px-3 py-1 right-0 rounded-bl-xl top-0 bg-blue-600/20 border-blue-500/30 text-blue-300">PV</div>
+        <h2 class="mono-font flex text-xs items-center gap-2 font-bold text-cyan-400 tracking-wider uppercase mb-3">
+          <i class="h-4 w-4 text-cyan-300" data-lucide="line-chart"></i> Pritisak / Zapremina
+        </h2>
+        <div class="flex items-center border rounded-xl bg-slate-950 border-blue-500/20 overflow-hidden relative shadow-inner aspect-[4/3] justify-center w-full">
+          <canvas class="w-full cursor-crosshair h-full" id="pvCanvas"></canvas>
+        </div>
+      </div>
+      <div class="glass-panel relative rounded-2xl overflow-hidden p-5">
+        <div class="mono-font text-[10px] absolute border-b border-l font-semibold px-3 py-1 right-0 rounded-bl-xl top-0 bg-orange-600/20 border-orange-500/30 text-orange-300">TS</div>
+        <h2 class="mono-font flex text-xs items-center gap-2 font-bold text-cyan-400 tracking-wider uppercase mb-3">
+          <i class="h-4 w-4 text-orange-400" data-lucide="activity"></i> Temp. / Entropija
+        </h2>
+        <div class="flex items-center border rounded-xl bg-slate-950 border-blue-500/20 overflow-hidden relative shadow-inner aspect-[4/3] justify-center w-full">
+          <canvas class="w-full cursor-crosshair h-full" id="tsCanvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="mono-font flex text-xs items-center rounded-xl flex-wrap gap-3 glass-panel justify-between p-4">
+      <div>
+        <span class="text-[10px] block text-slate-400">TRENUTNA FAZA:</span>
+        <span class="font-bold text-cyan-300" id="currentProcessName">A → B: Izotermsko širenje na $T_1$</span>
+      </div>
+      <div class="flex gap-4">
+        <div>p: <span class="font-bold text-white" id="curP">-</span> bar</div>
+        <div>V: <span class="font-bold text-white" id="curV">-</span> L</div>
+        <div>T: <span class="font-bold text-white" id="curT">-</span> K</div>
+      </div>
+    </div>
+
+    <div class="glass-panel relative rounded-2xl overflow-hidden p-5">
+      <div class="mono-font text-[10px] absolute border-b border-l font-semibold px-3 py-1 right-0 rounded-bl-xl top-0 bg-purple-600/20 border-purple-500/30 text-purple-300">CILINDAR</div>
+      <h2 class="mono-font flex text-xs items-center gap-2 font-bold text-cyan-400 tracking-wider uppercase mb-4">
+        <i class="h-4 w-4 text-purple-400" data-lucide="box"></i> Vizuelizacija Klipa i Termalne Razmene
+      </h2>
+      <div class="flex items-center border rounded-xl bg-slate-950 border-blue-500/20 relative shadow-inner flex-col gap-6 p-6 sm:flex-row sm:justify-around sm:items-center">
+        <div class="mono-font flex items-center gap-2 border bg-orange-500/15 border-orange-500/40 px-3.5 py-1.5 rounded-lg shadow-md text-[11px] text-orange-400 z-20 sm:absolute sm:top-4 sm:left-4" id="reservoirBadge">
+          <i class="h-4 w-4" data-lucide="flame"></i> <span id="reservoirText">Grejač aktivan ($T_1$)</span>
+        </div>
+        <div class="flex relative overflow-hidden flex-col bg-slate-900 border-2 border-cyan-500/40 h-44 justify-end rounded-b-2xl shadow-2xl w-36 mt-2 sm:mt-6">
+          <div class="flex items-center border-t-2 duration-75 justify-center relative shadow-inner transition-all w-full" id="gasFill" style="height:40%;background-color:rgba(0,180,216,.2);border-color:var(--color-accent)">
+            <div class="inset-0 [background-size:8px_8px] absolute bg-[radial-gradient(#4cc9f0_1.5px,transparent_1.5px)] opacity-25"></div>
+            <span class="mono-font font-bold drop-shadow text-[10px] text-cyan-300 tracking-widest z-10">GAS</span>
+          </div>
+          <div class="flex items-center border-cyan-400 absolute bg-gradient-to-r border-y from-blue-900 h-4 justify-center left-0 shadow-lg to-blue-900 via-indigo-700 w-full transition-all duration-75" id="pistonHead" style="bottom: 40%;">
+            <div class="rounded-full bg-cyan-400 h-1.5 shadow-[0_0_8px_cyan] w-8"></div>
+          </div>
+        </div>
+        <div class="mono-font max-w-xs sm:text-left space-y-3 text-center">
+          <div class="leading-relaxed text-xs text-slate-200" id="processPhaseDesc">Gas prima toplotu $Q_1$ od grejača i vrši rad pri konstantnoj temperaturi $T_1$.</div>
+          <div class="flex items-center justify-center sm:justify-start gap-1.5 text-[11px] text-slate-400">
+            <span class="rounded-full h-2 w-2 animate-ping bg-emerald-400"></span> Status sistema: <span class="text-cyan-400 font-semibold">U toku ciklusa</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="inset-0 backdrop-blur-md bg-slate-950/80 fixed hidden items-center justify-center p-4 z-50" id="infoModal">
+  <div class="mono-font border border-cyan-500/30 glass-panel max-h-[90vh] max-w-2xl overflow-y-auto p-6 relative rounded-2xl shadow-2xl space-y-4 w-full">
+    <button class="p-1.5 absolute hover:bg-blue-900/30 hover:text-white right-4 rounded-xl text-slate-400 top-4 transition" onclick="closeInfoModal()">
+      <i class="h-4 w-4" data-lucide="x"></i>
+    </button>
+    <div class="flex items-center border-blue-500/20 border-b pb-3 space-x-3">
+      <div class="bg-orange-500/20 p-2.5 rounded-xl text-orange-400"><i class="h-5 w-5" data-lucide="book-open"></i></div>
+      <h3 class="font-bold tracking-wider uppercase text-white text-sm">Teorijska Osnova - Karnov Ciklus</h3>
+    </div>
+    <div class="text-slate-300 leading-relaxed space-y-3 text-xs">
+      <p><strong>Karnov ciklus</strong> je idealan termodinamički kružni proces sa maksimalnom mogućom efikasnošću. Sastoji se od četiri faze:</p>
+      <ol class="space-y-2 list-decimal list-inside pl-1 text-slate-200">
+        <li><strong class="text-orange-400">Izotermsko širenje ($A \to B$):</strong> Kontakt sa grejačem na temperaturi $T_1$. Gas prima toplotu $Q_1$, širi se i vrši rad.</li>
+        <li><strong class="text-cyan-400">Adijabatsko širenje ($B \to C$):</strong> Cilindar je izolovan. Gas se širi bez razmene toplote, temperatura pada na $T_2$.</li>
+        <li><strong class="text-blue-400">Izotermsko sabijanje ($C \to D$):</strong> Kontakt sa hladnjakom na $T_2$. Gas se sabija uz predaju toplote $Q_2$.</li>
+        <li><strong class="text-purple-400">Adijabatsko sabijanje ($D \to A$):</strong> Cilindar je izolovan. Gas se sabija i zagreva nazad do $T_1$.</li>
+      </ol>
+      <div class="border rounded-xl mt-4 bg-slate-950 border-blue-500/30 p-4 text-center">
+        <span class="text-[10px] block text-slate-400 mb-2">MAKSIMALNI STEPEN ISKORIŠĆENJA:</span> $$\eta_{\text{max}} = 1 - \frac{T_2}{T_1}$$
+      </div>
+    </div>
+    <div class="flex justify-end pt-2">
+      <button class="border rounded-xl transition font-medium px-4 text-xs bg-gradient-to-r border-blue-400/30 from-blue-600 shadow-lg text-white to-indigo-600 hover:brightness-110 py-2" onclick="closeInfoModal()">Zatvori dokumentaciju</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
