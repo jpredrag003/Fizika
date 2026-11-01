@@ -1,4 +1,4 @@
-# 🔬 Karnov Ciklus - Interaktivna Termodinamička Simulacija
+# Karnov Ciklus - Interaktivna Termodinamička Simulacija
 
 Moderna, interaktivna veb aplikacija i vizuelizacija idealnog **Karnovog ciklusa** (Carnot cycle) u termodinamici. Projektovana je sa ciljem da intuitivno prikaže rad idealnog gasa, razmenu toplote sa rezervoarima i promene stanja sistema kroz PV i TS dijagrame u realnom vremenu.
 
