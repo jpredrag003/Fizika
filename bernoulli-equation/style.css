@@ -1,7 +1,37 @@
+/* Osnovna podešavanja tipografije */
 body {
     font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
+/* Veci i lakši za dodir slajderi na mobilnim uredajima */
 input[type=range] {
     accent-color: #3b82f6;
+    background-color: #0f172a; /* slate-950 */
+    border-radius: 0.5rem;
+    height: 8px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #3b82f6;
+    cursor: pointer;
+}
+
+/* Lepši scrollbar za modale i kontejnere */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0f172a; /* slate-950 */
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155; /* slate-700 */
+    border-radius: 8px;
 }

@@ -48,15 +48,15 @@ function setMode(mode) {
     const hGroup = document.getElementById('heightControlGroup');
 
     if (mode === 'horizontal') {
-        btnH.className = "px-3 py-1.5 text-xs font-medium rounded-lg transition bg-blue-600 text-white shadow";
-        btnI.className = "px-3 py-1.5 text-xs font-medium rounded-lg transition text-slate-400 hover:text-white";
+        btnH.className = "flex-1 sm:flex-initial px-3 py-1.5 text-xs font-medium rounded-lg transition bg-blue-600 text-white shadow text-center";
+        btnI.className = "flex-1 sm:flex-initial px-3 py-1.5 text-xs font-medium rounded-lg transition text-slate-400 hover:text-white text-center";
         state.h2 = 0.0;
         document.getElementById('sliderH2').value = 0.0;
         hGroup.style.opacity = '0.3';
         hGroup.style.pointerEvents = 'none';
     } else {
-        btnI.className = "px-3 py-1.5 text-xs font-medium rounded-lg transition bg-blue-600 text-white shadow";
-        btnH.className = "px-3 py-1.5 text-xs font-medium rounded-lg transition text-slate-400 hover:text-white";
+        btnI.className = "flex-1 sm:flex-initial px-3 py-1.5 text-xs font-medium rounded-lg transition bg-blue-600 text-white shadow text-center";
+        btnH.className = "flex-1 sm:flex-initial px-3 py-1.5 text-xs font-medium rounded-lg transition text-slate-400 hover:text-white text-center";
         hGroup.style.opacity = '1';
         hGroup.style.pointerEvents = 'auto';
     }
@@ -153,16 +153,19 @@ function updateSimulation() {
 
     if (p2_kPa < 5) {
         effectEl.innerText = "Kavitacija! Ekstreman pad pritiska";
-        effectEl.className = "text-xs font-semibold text-rose-500 leading-tight flex items-center justify-center h-full";
+        effectEl.className = "text-[11px] sm:text-xs font-semibold text-rose-500 leading-tight flex items-center justify-center h-full text-center";
         alertEl.classList.remove('hidden');
+        alertEl.classList.add('flex');
     } else if (p2_kPa < state.p1) {
         effectEl.innerText = "Venturijev efekt (Pritisak pao u suženju)";
-        effectEl.className = "text-xs font-semibold text-rose-400 leading-tight flex items-center justify-center h-full";
+        effectEl.className = "text-[11px] sm:text-xs font-semibold text-rose-400 leading-tight flex items-center justify-center h-full text-center";
         alertEl.classList.add('hidden');
+        alertEl.classList.remove('flex');
     } else {
         effectEl.innerText = "Povećan pritisak usled visinske razlike";
-        effectEl.className = "text-xs font-semibold text-emerald-400 leading-tight flex items-center justify-center h-full";
+        effectEl.className = "text-[11px] sm:text-xs font-semibold text-emerald-400 leading-tight flex items-center justify-center h-full text-center";
         alertEl.classList.add('hidden');
+        alertEl.classList.remove('flex');
     }
 
     state.calc = { v2, p2_kPa, dyn1: dyn1/1000, dyn2: dyn2/1000, totalEnergy: totalEnergy/1000 };
