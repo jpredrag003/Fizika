@@ -1,15 +1,32 @@
-* {
+:root {
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-canvas: #f1f5f9;
+    --bg-manometer: #0f172a;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --danger: #dc2626;
+    --border-color: #e2e8f0;
+    --border-canvas: #cbd5e1;
+    --accent-green: #34d399;
+    --font-main: 'Inter', system-ui, sans-serif;
+}
+
+*, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
 body {
-    background: #f8fafc;
-    color: #0f172a;
-    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-main);
     min-height: 100vh;
-    padding: 20px;
+    padding: 16px;
 }
 
 .container {
@@ -19,36 +36,29 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
 header h1 {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 800;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     letter-spacing: -0.035em;
 }
 
 header p {
-    color: #64748b;
-    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
     max-width: 800px;
     margin: 0 auto;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    padding: 0 10px;
 }
 
-@media (max-width: 850px) {
-    header p {
-        white-space: normal;
-    }
-}
-
+/* Grid raspored: 2 kolone na desktopu, 1 na mobilnom */
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
+    gap: 20px;
 }
 
 @media (max-width: 768px) {
@@ -58,89 +68,96 @@ header p {
 }
 
 .card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 20px;
-    padding: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .card h2 {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 700;
-    margin-bottom: 16px;
-    color: #1e293b;
+    margin-bottom: 12px;
+    color: var(--text-primary);
 }
 
 .canvas-container {
     display: flex;
     justify-content: center;
-    background: #f1f5f9;
+    align-items: center;
+    background: var(--bg-canvas);
     border-radius: 12px;
     padding: 10px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--border-canvas);
+    overflow: hidden;
 }
 
+/* Osigurava da se canvas nikada ne preliva preko ekrana na mobilnom */
 canvas {
     display: block;
+    max-width: 100%;
+    height: auto;
 }
 
 .manometer {
-    margin-top: 16px;
-    background: #0f172a;
-    color: #34d399;
+    margin-top: 14px;
+    background: var(--bg-manometer);
+    color: var(--accent-green);
     font-family: monospace;
-    padding: 12px 20px;
+    padding: 12px 16px;
     border-radius: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
 }
 
 .manometer span.label {
-    color: #94a3b8;
+    color: var(--text-muted);
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 .controls {
-    margin-top: 20px;
+    margin-top: 16px;
 }
 
 .control-group {
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 .control-header {
     display: flex;
     justify-content: space-between;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: #334155;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
+/* Povecana visina i lakše pomeranje slajdera prstom na mobilnom */
 input[type="range"] {
     width: 100%;
-    accent-color: #2563eb;
+    accent-color: var(--primary);
     cursor: pointer;
-    height: 6px;
-    background: #e2e8f0;
-    border-radius: 3px;
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
 }
 
 .button-row {
     display: flex;
     gap: 10px;
-    margin-top: 12px;
+    margin-top: 14px;
 }
 
+/* Veca dugmad za lakši klik na dodirnim ekranima */
 .btn-action {
     flex: 1;
-    padding: 10px;
-    background: #2563eb;
+    padding: 12px 8px;
+    background: var(--primary);
     color: #ffffff;
     border: none;
     border-radius: 8px;
@@ -151,31 +168,47 @@ input[type="range"] {
 }
 
 .btn-action:hover {
-    background: #1d4ed8;
+    background: var(--primary-hover);
 }
 
 .btn-action.active {
-    background: #dc2626;
+    background: var(--danger);
 }
 
 .info-box {
     margin-top: 12px;
     font-size: 0.8rem;
-    color: #475569;
-    background: #f8fafc;
+    color: var(--text-secondary);
+    background: var(--bg-main);
     padding: 10px 14px;
     border-radius: 8px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-color);
     text-align: center;
 }
 
 .explanation {
-    margin-top: 14px;
+    margin-top: 12px;
     background: #eff6ff;
-    border-left: 4px solid #2563eb;
+    border-left: 4px solid var(--primary);
     padding: 12px;
     border-radius: 0 8px 8px 0;
     font-size: 0.85rem;
     color: #1e3a8a;
     line-height: 1.4;
+}
+
+/* Dodatna prilagodavanja za baš male ekrane (telefone u portret režimu) */
+@media (max-width: 480px) {
+    body {
+        padding: 8px;
+    }
+    .card {
+        padding: 14px;
+    }
+    header h1 {
+        font-size: 1.4rem;
+    }
+    .button-row {
+        flex-direction: column;
+    }
 }
